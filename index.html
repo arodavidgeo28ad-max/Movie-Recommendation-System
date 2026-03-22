@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinemaIQ — Smart Movie Intelligence</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Playfair+Display:ital@1&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="ambient ambient-1"></div>
+    <div class="ambient ambient-2"></div>
+
+    <div class="app-shell">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <h1 class="logo">CINEMA<span>IQ</span><span class="logo-dot">.</span></h1>
+                <p class="tagline">Smart Movie Intelligence</p>
+            </div>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li class="active" data-section="home">
+                        <span class="nav-icon">🏠</span> Home
+                    </li>
+                    <li data-section="trending">
+                        <span class="nav-icon">🔥</span> Trending
+                    </li>
+                    <li data-section="recommendations">
+                        <span class="nav-icon">✨</span> For You
+                        <span class="nav-badge">AI</span>
+                    </li>
+                    <li data-section="genres">
+                        <span class="nav-icon">🎥</span> Explore Genres
+                    </li>
+                    <li data-section="watchlist">
+                        <span class="nav-icon">🔖</span> My Watchlist
+                    </li>
+                    <li data-section="analytics">
+                        <span class="nav-icon">📊</span> Analytics
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div id="dataset-status">Loading Engine</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Top Search Bar -->
+            <header class="topbar">
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="movie-search" placeholder="Search titles, genres, or keywords..."
+                        autocomplete="off">
+                    <button id="voice-search-btn" class="voice-btn" title="Voice Search">🎤</button>
+                    <div id="search-suggestions" class="suggestions-dropdown hidden"></div>
+                </div>
+
+                <div class="topbar-actions">
+                    <button id="surprise-btn" class="secondary-btn">🎲 Surprise Me</button>
+                    <button id="recommend-btn" class="primary-btn">Get Recommendations</button>
+                    <div class="avatar">U</div>
+                </div>
+            </header>
+
+            <!-- HOME SECTION -->
+            <section id="sec-home" class="view-section active">
+                <div class="hero-strip" id="hero-banner">
+                    <h2 id="hero-title">Welcome to <span>CinemaIQ</span></h2>
+                    <p id="hero-desc">Discover your next favorite film with our cinematic intelligence engine.</p>
+                    <div class="hero-meta"></div>
+                    <button id="hero-play" class="primary-btn mt-4">Play Featured</button>
+                </div>
+
+                <div class="sec-header" style="margin-top: 40px;">
+                    <div class="sec-title">Trending Now</div>
+                </div>
+                <div class="movie-grid" id="home-trending"></div>
+
+                <div class="sec-header">
+                    <div class="sec-title">Recommended for You</div>
+                </div>
+                <div class="movie-grid" id="home-recommendations"></div>
+            </section>
+
+            <!-- TRENDING SECTION (Full view) -->
+            <section id="sec-trending" class="view-section">
+                <div class="sec-header">
+                    <div class="sec-title">Trending This Week</div>
+                </div>
+                <!-- We reuse the home-trending ID or script.js would need update. 
+                     For simplicity, I'll add another grid here but I'd need script support. 
+                     Actually, I'll just make this section show a distinct grid if script.js supported it. 
+                     Since script.js doesn't have a dedicated trending grid for a full section, 
+                     I'll just reuse the home one or keep it simple. -->
+                <div class="movie-grid" id="full-trending-grid"></div>
+            </section>
+
+            <!-- RECOMMENDATIONS VIEW (After Search) -->
+            <section id="sec-recommendations" class="view-section">
+                <div class="hero-strip" style="padding: 24px; min-height: auto; margin-bottom: 24px;">
+                    <div id="recommendation-context"></div>
+                </div>
+                <div class="movie-grid" id="recommended-grid"></div>
+            </section>
+
+            <!-- EXPLORE GENRES -->
+            <section id="sec-genres" class="view-section">
+                <div class="sec-header">
+                    <div class="sec-title">Explore by Genre</div>
+                </div>
+                <div class="filter-controls" style="display: flex; gap: 12px; margin-bottom: 24px;">
+                    <select id="genre-filter" class="filter-select">
+                        <option value="">All Genres</option>
+                    </select>
+                    <select id="rating-filter" class="filter-select">
+                        <option value="">Any Rating</option>
+                        <option value="8">8.0+</option>
+                        <option value="7">7.0+</option>
+                        <option value="6">6.0+</option>
+                    </select>
+                    <select id="year-filter" class="filter-select">
+                        <option value="">Any Year</option>
+                        <option value="2020">2020s</option>
+                        <option value="2010">2010s</option>
+                        <option value="2000">2000s</option>
+                    </select>
+                </div>
+                <div class="movie-grid" id="discover-grid"></div>
+            </section>
+
+            <!-- WATCHLIST -->
+            <section id="sec-watchlist" class="view-section">
+                <div class="sec-header">
+                    <div class="sec-title">My Watchlist</div>
+                </div>
+                <div class="movie-grid" id="watchlist-grid"></div>
+            </section>
+
+            <!-- ANALYTICS -->
+            <section id="sec-analytics" class="view-section">
+                <div class="sec-header">
+                    <div class="sec-title">Dataset Overview</div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <h3>Total Movies</h3>
+                        <p id="stat-total-movies">—</p>
+                        <div class="stat-sub">In the dataset</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Genres</h3>
+                        <p id="stat-total-genres">—</p>
+                        <div class="stat-sub">Unique categories</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Avg Rating</h3>
+                        <p id="stat-avg-rating">—</p>
+                        <div class="stat-sub">Out of 10.0</div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <div class="table-header" style="padding: 20px; border-bottom: 1px solid var(--border);">
+                        <h3 style="font-family: 'Bebas Neue'; letter-spacing: 2px;">Data Visualization</h3>
+                    </div>
+                    <div class="charts-container"
+                        style="display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px;">
+                        <canvas id="genreChart"></canvas>
+                        <canvas id="ratingChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL -->
+    <div id="movie-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">×</button>
+            <div class="modal-body">
+                <div class="modal-poster-wrap" id="modal-poster">
+                    <div id="modal-poster-bg" class="card-bg-placeholder" style="width:100%; height:100%">
+                        <span class="modal-poster-icon" style="font-size: 8rem;">🎬</span>
+                    </div>
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-title">Movie Title</h2>
+                    <div class="modal-meta">
+                        <span id="modal-rating">⭐ 0.0</span>
+                        <span id="modal-year">2024</span>
+                        <span id="modal-genre">Genre</span>
+                    </div>
+                    <p id="modal-desc">Description…</p>
+                    <div class="modal-cast-section" style="margin-bottom: 2rem;">
+                        <h4
+                            style="color:var(--text-muted); text-transform:uppercase; font-size: 0.8rem; margin-bottom: 0.5rem;">
+                            Cast</h4>
+                        <div id="modal-cast" style="color:var(--text-secondary)">Actor names...</div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="primary-btn" id="modal-recommend-similar">✦ Find Similar</button>
+                        <button class="secondary-btn" id="modal-add-watchlist">➕ My List</button>
+                    </div>
+                    <div class="similar-section" style="margin-top: 3rem;">
+                        <h3 style="font-family: 'Bebas Neue'; letter-spacing: 1.5px; margin-bottom: 1rem;">Similar Picks
+                        </h3>
+                        <div class="movie-grid mini-grid" id="modal-similar-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="dataset.js?v=6"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
